@@ -17,13 +17,15 @@ import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.annotation.SuppressLint
 
 
 class MainActivity : AppCompatActivity() {
+    var wordLength = 4
     var numGuesses = 0
     val wordToGuess = FourLetterWordList.getRandomFourLetterWord()
     var currentUserGuess = 1
-    var wordLength = 4
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         val resetButton = findViewById<Button>(R.id.resetButton)
         var userGuess = findViewById<TextView>(R.id.TestFactor)
         var checkGuess = findViewById<TextView>(R.id.guess_1_check)
+        var winner = 0
 
         // when press "Enter" key on your keyboard
         editText.setOnKeyListener(View.OnKeyListener { _, keyCode, event ->
@@ -56,8 +59,11 @@ class MainActivity : AppCompatActivity() {
                     editText.text.clear()
 
                     checkGuess(userGuess.text.toString(), checkGuess)
+//                    ReturnGuess(userGuess.text.toString(),wordToGuess)
+//                    aiGuess(aiFeedback)
+
                     if (checkIfWin(checkGuess.text.toString())) {
-                        Toast.makeText(this, "Congratulations, you won!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "You WIN!", Toast.LENGTH_SHORT).show()
                         Result.visibility = View.VISIBLE
                         resetButton.visibility = View.INVISIBLE
                         editText.isFocusable = false
@@ -109,10 +115,12 @@ class MainActivity : AppCompatActivity() {
                     if (checkIfWin(checkGuess.text.toString())) {
                         Toast.makeText(this, "YOU WIN!", Toast.LENGTH_SHORT).show()
 
+                        // Hide reset button and change guess button to restart Game
+                        //Turn to repeatable function?
                         Result.visibility = View.VISIBLE
                         resetButton.visibility = View.INVISIBLE
                         editText.isFocusable = false
-                        guessButton.text = "Restart"
+                        guessButton.text = "Restart Game"
                         guessButton.setOnClickListener {
                             overridePendingTransition(0,0)
                             finish()
@@ -126,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                         editText.isFocusable = false
 
 
-                        guessButton.text = "Restart"
+                        guessButton.text = "Restart Game"
                         guessButton.setOnClickListener {
                             overridePendingTransition(0,0)
                             finish()
@@ -157,12 +165,14 @@ class MainActivity : AppCompatActivity() {
                 editText.text.clear()
 
                 checkGuess(userGuess.text.toString(), checkGuess)
+
+                // check win but only for player
                 if (checkIfWin(checkGuess.text.toString())) {
-                    Toast.makeText(this, "Congratulations, you won!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Winner Winner Chicken Dinner!", Toast.LENGTH_SHORT).show()
                     Result.visibility = View.VISIBLE
                     resetButton.visibility = View.INVISIBLE
                     editText.isFocusable = false
-                    guessButton.text = "Restart"
+                    guessButton.text = "Restart Game"
                     guessButton.setOnClickListener {
                         overridePendingTransition(0,0)
                         finish()
@@ -175,7 +185,7 @@ class MainActivity : AppCompatActivity() {
                     resetButton.visibility = View.INVISIBLE
                     editText.isFocusable = false
 
-                    guessButton.setText("Restart")
+                    guessButton.setText("Restart Game")
                     guessButton.setOnClickListener {
                         overridePendingTransition(0,0)
                         finish()
@@ -222,6 +232,7 @@ class MainActivity : AppCompatActivity() {
             if (guess[i] == wordToGuess[i]) {
                 val fColor = ForegroundColorSpan(Color.GREEN)
                 sb.setSpan(fColor,i, i+1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+
             }
             else if (guess[i] in wordToGuess) {
                 val fColor = ForegroundColorSpan(Color.BLUE)
@@ -235,7 +246,62 @@ class MainActivity : AppCompatActivity() {
         textView.text = sb
     }
 
-    // Win Condition met?
+//    fun ReturnGuess(guess: String, wordToGuess: String) : String {
+//        var result = ""
+//        for (i in 0..3) {
+//            if (guess[i] == wordToGuess[i]) {
+//                result += "O"
+//            } else if (guess[i] in wordToGuess) {
+//                result += "+"
+//            } else {
+//                result += "X"
+//            }
+//        }
+//        return result
+//    }
+//    fun aiGuess (aiGuessList: List<String>): String {
+//        var randomNumber = (0..aiGuessList.size).shuffled().last()
+//        return aiGuessList[randomNumber].uppercase()
+//    }
+//    fun aiFeedback (aiGuessList: List <String>,feedbackCheck: String, aiprevGuess: String ): List<String> {
+//        var letterOne = aiprevGuess[0]
+//        var letterTwo = aiprevGuess[1]
+//        var letterThree = aiprevGuess [2]
+//        var letterFour = aiprevGuess [3]
+//
+//        var feedbackLetterOne = feedbackCheck [0]
+//        var feedbackLetterTwo = feedbackCheck [1]
+//        var feedbackLetterThree = feedbackCheck [2]
+//        var feedbackLetterFour = feedbackCheck [3]
+//
+//        removing words with non present letters  Not working at moment!!!!!!
+//        for (item in aiGuessList){
+//            if (item[0] == letterOne){
+//                if (feedbackLetterOne = "X") aiGuessList.remove(item)}
+//            if (item[1] == letterTwo){
+//                if (feedbackLetterTwo = "X") aiGuessList.remove(item)}
+//            if (item[2] == LetterThree){
+//                if (feedbackLetterThree = "X") aiGuessList.remove(item)}
+//            if (item[3] == letterFour){
+//                if (feedbackLetterFour = "X") aiGuessList.remove(item)}
+//        }
+//        return aiGuessList
+//    }
+
+
+//    }
+
+//    private fun checkIfWin (aiGuess: String, userGuess: String): Int {
+//        if (aiGuess == wordToGuess){
+//            winner = 2
+//            return winner}
+//        else if (userGuess == wordToGuess){
+//            winner = 1
+//            return winner}
+//        else{
+//            return winner}
+//    }
+
     private fun checkIfWin(string : String): Boolean {
         if (string == wordToGuess) {
             // Win screen Implementation!!!!!!!!
